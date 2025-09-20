@@ -1,0 +1,108 @@
+const db = require("../db/queries")
+const path = require("node:path");
+const fs = require('fs')
+
+
+function validateAlgorithm({ name, description }) {
+  const errors = [];
+  if (!name || name.trim() === "") errors.push("Name is required.");
+  if (!description || description.trim() === "") errors.push("Description is required.");
+  return errors;
+}
+
+async function getList(req, res){
+    if (req.method === "POST"){
+        console.log("in [post")
+        const category = req.body.category;
+        const algorithms = await db.getAllCategory(category);
+        return res.render("index", {
+        title: "Algorithms",
+        algorithms: algorithms,
+        selected: category})
+    }
+    
+    const algorithms = await db.getAll();
+    res.render("index", {
+        title: "Algorithms",
+        algorithms: algorithms,
+        selected: "None",
+    });
+};
+
+async function getAlgorithm(req, res){
+    const id = req.params.id;
+    const algorithms = await db.getSingle(id);
+    console.log(algorithms)
+    res.render("view", {
+        title: algorithms[0].name,
+        algorithms: algorithms,
+    });
+};
+async function deleteAlgorithm(req, res) {
+    id = req.params.id;
+    await db.deleteAlgorithm(id);
+    res.redirect(`/`);
+  }
+
+async function addAlgorithm(req, res) {
+  if (req.method === "GET") {
+    return res.render("new", {
+      title: "Add an Algorithm"
+    });
+  }
+
+  const { name, runtime, space, description, comment } = req.body;
+  const errors = validateAlgorithm({ name, description });
+
+  if (errors.length > 0) {
+    return res.status(400).render("new", {
+      title: "Add New Algorithm",
+      error: errors.join(" "),
+      formData: req.body
+    });
+  }
+  try {
+    const structure = Array.isArray(req.body.structure)
+  ? req.body.structure.join(', ')
+  : req.body.structure;
+    const newId = await db.createAlgorithm({
+      name,
+      runtime,
+      space,
+      structure,
+      description,
+      comment
+    });
+    // Disabling file saving for online hosting.
+    // if (req.file) {
+    //   const tempPath = req.file.path;
+    //   const targetPath = path.join(__dirname, '..', 'public', `${newId}.jpg`);
+    //   fs.renameSync(tempPath, targetPath);
+    // }
+
+    res.redirect(`/view/${newId}`);
+  } catch (err) {
+    console.error("Error adding algorithm:", err);
+    res.status(500).render("new", {
+      title: "Add an Algorithm",
+      error: "Something went wrong.",
+      formData: req.body
+    });
+  }
+}
+
+
+module.exports = {
+  getList,
+  getAlgorithm,
+  addAlgorithm,
+  deleteAlgorithm,
+}
+
+
+// We Need the following routes: 
+// Update Algorithm
+// Delete Algorithm
+
+// Validators for Update / Aadd
+

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <%- include('nav') %>
+    <section class="algorithms-list">
+        <form class="categoryForm" method="post">
+            <div class="formHolder">
+                <label for="category">Category</label>
+                    <select id="category" name="category">
+                        <option value="Graph" <% if (selected && selected === "Graph") { %> selected <% } %>> Graph</option>
+                        <option value="Tree" <% if (selected && selected === "Tree") { %> selected <% } %>> Tree</option>
+                        <option value="Heap" <% if (selected && selected === "Heap") { %> selected <% } %>>Heap</option>
+                        <option value="Stack" <% if (selected && selected === "Stack") { %> selected <% } %>>Stack</option>
+                        <option value="Matrix" <% if (selected && selected === "Matrix") { %> selected <% } %>>Matrix</option>
+                    </select>
+            </div>
+            <button type="submit">Search</button>         
+        </form>
+        <% if (algorithms && algorithms.length) { %>
+        
+            <% algorithms.forEach(algo => { %>
+            <div class="AlgorithmListCard">
+                <div class="imageContainer" style="background-image: url('/static/<%= algo.id === 1 ? '1.jpg' : 'algorithm-icon.jpg' %>');"
+></div>
+                <div class="rightContainer">
+                    <div class="title"><a href="/view/<%= algo.id %>"><%= algo.name %></a></div>
+                    <div class="added">Added: <%= new Date(algo.added).toLocaleString('en-GB', {
+                        day: '2-digit',
+                        month: 'short',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                    }) %></div>
+                     <div class="added">Category: <%= algo.structure %></div>
+                    <div class="description">
+                        <%= algo.description %>
+                    </div>
+                </div>
+            </div>
+       
+        <% }) %>
+        <% } %>
+    </section>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <%- include('nav') %>
+    <section class="algorithms-list">
+        <% if (algorithms && algorithms.length) { %>
+            <% algorithms.forEach(algo => { %>
+            <div class="AlgorithmListCard">
+                <div class="imageContainer" style="background-image: url('/static/<%= algo.id === 1 ? '1.jpg' : 'algorithm-icon.jpg' %>');"
+></div>
+                <div class="rightContainer">
+                    <div class="title"><%= algo.name %></div>
+                    <div class="added">Added: <%= new Date(algo.added).toLocaleString('en-GB', {
+                        day: '2-digit',
+                        month: 'short',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                    }) %></div>
+                    <div class="complexity">
+                        <strong>Time Complexity:</strong> <%= algo.runtime %> <strong>Space Complexity:</strong> <%= algo.space %>
+                    </div>
+                    <div class="complexity">
+                        <strong>Datastructure:</strong> <%= algo.structure %>
+                    </div>
+                    <div class="description">
+                        <strong>Description:</strong> <%= algo.description %>
+                    </div>
+                    <div class="comment">
+                        <strong>Comment:</strong> <%= algo.comment %>
+                    </div>
+                    <div class="updated">
+                        Updated: <%= new Date(algo.updated).toLocaleString('en-GB', {
+                        day: '2-digit',
+                        month: 'short',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                    }) %></div>
+
+                    </div>
+                </div>
+            </div>
+       
+        <% }) %>
+        <% } %>
+    </section>
+    <section class="delete">
+        <div class="deleteAlgorithm">
+        <a href="/delete/<%= algorithms[0].id %>">    
+        Click here to delete this algorithm.
+        </a>
+        </div>
+    </section>
+   
+
+</body>
+</html>
