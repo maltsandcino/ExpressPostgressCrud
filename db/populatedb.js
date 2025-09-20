@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS algo (
 async function main() {
   console.log("seeding...");
   const client = new Client({
-    connectionString: `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@localhost:5432/algorithms`,
+    connectionString: process.env.DATABASE_URL,
   });
   await client.connect();
   await client.query(SQL1);
